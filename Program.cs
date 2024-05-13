@@ -99,6 +99,7 @@ class Program
     {
         int linhas = matriz.GetLength(0);
         int colunas = matriz.GetLength(1);
+        int larguraCelula = 9; // Largura fixa para cada célula
 
         Console.WriteLine($"Matriz criada: {linhas} linhas x {colunas} colunas");
 
@@ -106,7 +107,7 @@ class Program
         Console.Write("┌");
         for (int i = 0; i < colunas; i++)
         {
-            Console.Write("--------");
+            Console.Write("-----------");
         }
         Console.WriteLine("┐");
 
@@ -116,19 +117,28 @@ class Program
             Console.Write("| ");
             for (int j = 0; j < colunas; j++)
             {
-                if (matriz[i, j] == 1) // Percepção de poço
+
+                string conteudo = "";
+                if (i == (linhas -1) && (j == 0)) // Agente na primeira col e ultima lin
                 {
-                    Console.Write(" Poco ");
+                    conteudo = "   A   ";
+                }
+
+                else if (matriz[i, j] == 1) // Percepção de poço
+                {
+                    conteudo = "Poco";
                 }
                 else if (matriz[i, j] == 2) // Percepção de brisa
                 {
-                    Console.Write(" Brisa");
+                    conteudo = "Brisa";
                 }
-                else // Célula normal
+                else 
                 {
-                    Console.Write("     ");
+                    
+                    conteudo = "0";
                 }
-                Console.Write(" | ");
+                Console.Write(conteudo.PadRight(larguraCelula));
+                Console.Write("| ");
             }
             Console.WriteLine();
 
@@ -138,7 +148,7 @@ class Program
                 Console.Write("├");
                 for (int k = 0; k < colunas; k++)
                 {
-                    Console.Write("--------");
+                    Console.Write("-----------");
                 }
                 Console.WriteLine("┤");
             }
@@ -148,7 +158,7 @@ class Program
         Console.Write("└");
         for (int i = 0; i < colunas; i++)
         {
-            Console.Write("--------");
+            Console.Write("-----------");
         }
         Console.WriteLine("┘");
     }
