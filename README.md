@@ -1,6 +1,7 @@
 # wumpus-game-ia
 ## Mundo de Wumpus
-<strong>É um exemplo do mundo simplificado,criado por Gregory Yob, 1973, para ilustrar o valor de um agente baseado em conhecimento e a representação do conhecimento</strong>
+<strong>É um exemplo do mundo simplificado,criado por Gregory Yob, 1973, para ilustrar o valor de um agente baseado em conhecimento e a 
+representação do conhecimento</strong>
 - É uma caverna formada por uma matriz 4x4, isto é 16 salas conectadas
 - A caverna tem uma sala habitada por um monstro , o ¹Wumpus, que devora quem entrar na sala.
 - Temos um ¹agente que avançará neste mundo;
@@ -14,6 +15,29 @@
 - O Wumpus pode ser morto pelo agente, se o agente estiver de frente para ele e atirar a flecha
 - O Wumpus, ao ser atingido, emitirá um grito que será ouvido por toda a caverna.
 
+## Ambiente:
+- O agente começa sempre na sala [1,1];
+- A barra de ouro e do Wumpus sao posicionados aleatoriamente,exceto na posicao[1,1];
+- Os poços são posicionados aleatoriamente, exceto na posição [1,1], e nas salas da barra de ouro e do Wumpus
+
+## Atuadores (do agente):
+- Movimentação para norte, sul, leste, oeste;
+- Pegar a barra de ouro
+- Atirar a flecha
+- # Observações: 
+- As ações jamais ocorrem na diagonal;
+- As ações impactam apenas uma única casa
+
+## Sensores (do agente):
+- Sentir 'fedor', se estiver em salas adjacentes ao Wumpus:
+- Sentir 'brisa', se estiver em salas adjacentes aos pocos;
+- Sentir 'impacto' ao bater em uma parede;
+- Quando o Wumpus é atingido pela flecha, ele emite um 'grito' que é percebido em toda a caverna
+- # Observação:
+- As percepções jamais ocorrem na diagonal
+
+## Imagens 
+<img src="./images/exemplificacao01.png">
 
 
 ### Desenvolver o jogo "Mundo de Wumpus" é uma ótima maneira de explorar conceitos fundamentais de inteligência artificial, como busca em espaços de estado, planejamento, tomada de decisão e aprendizado. Aqui estão algumas ideias de como você pode usar esses conceitos para resolver ou mensurar problemas da vida real:
