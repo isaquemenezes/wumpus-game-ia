@@ -1,171 +1,138 @@
 ﻿using System;
+using System.Data;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Bem-vindo ao Jogo do Wumpus!");
-        Console.WriteLine("Escolha o tamanho da matriz:");
-        Console.WriteLine("Opção 1. 4 por 4");
-        Console.WriteLine("Opção 2. 5 por 4");
-        Console.WriteLine("Opção 3. 6 por 6");
+        //Define o tamanho da matriz
+        Console.WriteLine("Digite o tamanho da matriz que deseja criar:");
+        int tamanho = int.Parse(Console.ReadLine());
 
-      
+        //Cria a Matriz
+        int[,] matriz = new int[tamanho, tamanho];
+        Random rand = new Random(); //Instancia a variável rand para gerar posições aleatórias dentor da matriz    
 
-        int opcao;
-        do
-        {
-            Console.Write("Opção: ");
-        } while (!int.TryParse(Console.ReadLine(), out opcao) || opcao < 1 || opcao > 3);
+        //Métodos de Criação
+        criaPoco(tamanho, rand, matriz);
+        criaWumpus(tamanho, rand, matriz);
+        criaGold(tamanho, rand, matriz);
 
-        int linhas, colunas;
+        //Insere o agente na casa [0,0]
+        matriz[0, 0] = 7;
 
-        switch (opcao)
-        {
-            case 1:
-                linhas = 4;
-                colunas = 4;
-                break;
-            case 2:
-                linhas = 5;
-                colunas = 4;
-                break;
-            case 3:
-                linhas = 6;
-                colunas = 6;
-                break;
-            default:
-                linhas = 4;
-                colunas = 4;
-                break;
-        }
-        // Criando a matriz escolhida
-        int[,] matriz = new int[linhas, colunas];
+        //Teste de nova matriz
+        int[,] novaMatriz = new int[tamanho, tamanho];
 
-        // Definindo as percepções (pocos e brisas)
-        DefinirPercepcoes(matriz, 3, 2);
-
-        // Exibindo a matriz com as percepções
-        ImprimirMatrizComPercepcoes(matriz);
-
-        /* / Exibindo a matriz para verificar se está correta
-        Console.WriteLine($"Matriz criada: {linhas} linhas x {colunas} colunas");
-
-        for (int i = 0; i < linhas; i++)
-        {
-            
-            for (int j = 0; j < colunas; j++)
-            {
-                
-                Console.Write("|");
-
-                Console.Write($"___");
-            }
-            Console.WriteLine("|");
-        }
-        */
-
-
-
-
+        //Método de exibição
+        exibirGrid(tamanho, matriz);
+        // EM DESENVOLVIMENTO exibirGrid(tamanho, percepcaoBrisa(tamanho, matriz, novaMatriz)); // Teste de nova matriz
     }
 
-    static void DefinirPercepcoes(int[,] matriz, int numeroPocos, int numeroBrisas)
+    static void criaPoco(int tamanho, Random rand, int[,] matriz)
     {
-        Random rand = new Random();
-        int linhas = matriz.GetLength(0);
-        int colunas = matriz.GetLength(1);
+        int numPocos = (int)Math.Round(Math.Pow(tamanho, 2) * 0.1875f); //Definição do número de poços para cada mapa
 
-        // Define poços (representados pelo valor 1)
-        for (int i = 0; i < numeroPocos; i++)
+        for (int i = 0; i < numPocos; i++) //Cria o elemento poço aleatório no grid
         {
-            int linha = rand.Next(0, linhas);
-            int coluna = rand.Next(0, colunas);
-            matriz[linha, coluna] = 1;
-        }
+            int randomRow = rand.Next(1, tamanho);
+            int randomCol = rand.Next(1, tamanho);
 
-        // Define brisas (representadas pelo valor 2)
-        for (int i = 0; i < numeroBrisas; i++)
-        {
-            int linha = rand.Next(0, linhas);
-            int coluna = rand.Next(0, colunas);
-            if (matriz[linha, coluna] != 1) // Evita colocar brisa onde há poço
+            //Verifica se a posição gerada está vazia
+            while (matriz[randomRow, randomCol] != 0)
             {
-                matriz[linha, coluna] = 2;
+                randomRow = rand.Next(1, tamanho);
+                randomCol = rand.Next(1, tamanho);
             }
+            matriz[randomRow, randomCol] = 2; //Imprime o elemento poço na posição gerada
         }
     }
-    static void ImprimirMatrizComPercepcoes(int[,] matriz)
+    static void criaWumpus(int tamanho, Random rand, int[,] matriz)
     {
-        int linhas = matriz.GetLength(0);
-        int colunas = matriz.GetLength(1);
-        int larguraCelula = 9; // Largura fixa para cada célula
+        //Cria o Wumpus no mapa
+        int wumpusPosRow = rand.Next(1, tamanho);
+        int wumpusPosCol = rand.Next(1, tamanho);
 
-        Console.WriteLine($"Matriz criada: {linhas} linhas x {colunas} colunas");
-
-        // Imprime a linha de grades superior
-        Console.Write("┌");
-        for (int i = 0; i < colunas; i++)
+        while (matriz[wumpusPosRow, wumpusPosCol] != 0) //Verifica se a posição gerada está vazia
         {
-            Console.Write("-----------");
+            wumpusPosRow = rand.Next(1, tamanho);
+            wumpusPosCol = rand.Next(1, tamanho);
         }
-        Console.WriteLine("┐");
+        matriz[wumpusPosRow, wumpusPosCol] = 1; //Imprime o elemento Wumpus na posição gerada
+    }
+    static void criaGold(int tamanho, Random rand, int[,] matriz)
+    {
+        //Cria o ouro no mapa
+        int goldPosRow = rand.Next(1, tamanho);
+        int goldPosCol = rand.Next(1, tamanho);
 
-        // Imprime o conteúdo da matriz com percepções
-        for (int i = 0; i < linhas; i++)
+        while (matriz[goldPosRow, goldPosCol] != 0 && matriz[goldPosRow, goldPosCol] != 1) //Verifica se a posição gerada está vazia
         {
-            Console.Write("| ");
-            for (int j = 0; j < colunas; j++)
+            goldPosRow = rand.Next(1, tamanho);
+            goldPosCol = rand.Next(1, tamanho);
+        }
+        if (matriz[goldPosRow, goldPosCol] == 1)
+        {
+            matriz[goldPosRow, goldPosCol] = 4; //Imprime os elementos Wumpus e Gold na posição gerada
+        }
+        else
+        {
+            matriz[goldPosRow, goldPosCol] = 3; //Imprime o elemento Gold na posição gerada
+        }
+    }
+
+    /* Percepções - EM DESENVOLVIMENTO 
+    static int[,] percepcaoBrisa(int tamanho, int[,] matriz, int[,] novaMatriz)
+     {
+         for (int i = 0; i < tamanho; i++)
+         {
+             for (int j = 0; j < tamanho; j++)
+             {
+                 if (matriz[i, j] == 2)
+                 {
+
+                     if (i - 1 >= 0 && i + 1 < tamanho && j - 1 >= 0 && j + 1 < tamanho)
+                     {
+                         novaMatriz[i, j - 1] = 2;
+                         novaMatriz[i, j + 1] = 2;
+                         novaMatriz[i - 1, j] = 2;
+                         novaMatriz[i + 1, j] = 2;
+                     }
+
+                 }
+             }
+         }
+         return novaMatriz;
+     } */
+    static void exibirGrid(int tamanho, int[,] matriz)
+    {
+        //Criando o preenchimento a DataTable com os elementos da matriz 
+        DataTable dataTable = new DataTable();
+
+        for (int j = 0; j < tamanho; j++)
+        {
+            dataTable.Columns.Add($"Coluna{j + 1}", typeof(int));
+        }
+
+        for (int i = 0; i < tamanho; i++)
+        {
+            DataRow row = dataTable.NewRow();
+            for (int j = 0; j < tamanho; j++)
             {
+                row[j] = matriz[i, j];
+            }
+            dataTable.Rows.Add(row);
+        }
 
-                string conteudo = "";
-                if (i == (linhas -1) && (j == 0)) // Agente na primeira col e ultima lin
-                {
-                    conteudo = "   A   ";
-                }
-
-                else if (matriz[i, j] == 1) // Percepção de poço
-                {
-                    conteudo = "Poco";
-                }
-                else if (matriz[i, j] == 2) // Percepção de brisa
-                {
-                    conteudo = "Brisa";
-                }
-                else 
-                {
-                    
-                    conteudo = "0";
-                }
-                Console.Write(conteudo.PadRight(larguraCelula));
-                Console.Write("| ");
+        // Exibindo a DataTable como tabela
+        Console.WriteLine("\nMapa do 'Mundo de Wumpus':");
+        foreach (DataRow dataRow in dataTable.Rows)
+        {
+            foreach (var item in dataRow.ItemArray)
+            {
+                Console.Write(item + "\t");
             }
             Console.WriteLine();
-
-            // Imprime a linha de grades entre as linhas da matriz
-            if (i < linhas - 1)
-            {
-                Console.Write("├");
-                for (int k = 0; k < colunas; k++)
-                {
-                    Console.Write("-----------");
-                }
-                Console.WriteLine("┤");
-            }
         }
-
-        // Imprime a linha de grades inferior
-        Console.Write("└");
-        for (int i = 0; i < colunas; i++)
-        {
-            Console.Write("-----------");
-        }
-        Console.WriteLine("┘");
     }
-
-
-
 }
-
-
-
